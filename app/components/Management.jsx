@@ -1,6 +1,7 @@
 var React = require('react');
 import 'react-trumbowyg/dist/trumbowyg.min.css';
 import Trumbowyg from 'react-trumbowyg';
+import { FormGroup,InputGroup,FormControl,Button } from 'react-bootstrap';
 
 class Management extends React.Component {
     constructor(props) {
@@ -9,11 +10,26 @@ class Management extends React.Component {
         this.submitArticle = this.submitArticle.bind(this);
     }
     submitArticle(){
-        this.setState({content:$("#react-trumbowyg").html()});
+        var articleHeader=$("#articleHeader").val();
+        var articleContent=$("#react-trumbowyg").html();
+        var articleTime=formatDate(new Date());
+        var articleObj={
+            articleHeader:articleHeader,
+            articleContent:articleContent,
+            articleTime:articleTime
+        };
+        console.log(articleObj);
+        $("#articleContainer").html($("#react-trumbowyg").html());
     }
     render() {
         return (
             <div>
+                <FormGroup>
+                    <InputGroup>
+                        <InputGroup.Addon>文章标题：</InputGroup.Addon>
+                        <FormControl type="text" id="articleHeader" placeholder="请输入文章标题"/>
+                    </InputGroup>
+                </FormGroup>
                 <Trumbowyg id='react-trumbowyg' buttons={
                     [
                         ['viewHTML'],
@@ -27,13 +43,33 @@ class Management extends React.Component {
                            data='aaaa'
                            placeholder='Type your text!'
                            />
-                <button onClick={this.submitArticle}>submit</button>
-                <div>it is {this.state.content}</div>
-                <div id=""></div>
+                <Button bsStyle="primary" onClick={this.submitArticle}>发布</Button>
+
+                <div id="articleContainer"></div>
             </div>
         )
     }
 }
-
+function formatDate(date){
+    var dd = date.getDate();
+    var mm = date.getMonth()+1; //January is 0!
+    if (dd < 10){
+        dd = "0"+dd;
+    }
+    if (mm < 10){
+        mm = "0"+mm;
+    }
+    var yyyy = date.getFullYear();
+    var hh=date.getHours();
+    var min=date.getMinutes();
+    var ss=date.getSeconds();
+    if(min>=0&&min<10){
+        min="0"+min;
+    }
+    if(ss>=0&&ss<10){
+        ss="0"+ss;
+    }
+    return yyyy+"-"+mm+"-"+dd+" "+hh+":"+min+":"+ss;
+}
 
 module.exports = Management;
